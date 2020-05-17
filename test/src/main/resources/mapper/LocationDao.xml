@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.test.dao.LocationDao">
+
+    <resultMap type="com.demo.test.entity.Location" id="LocationMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="lname" column="lName" jdbcType="VARCHAR"/>
+        <result property="wid" column="wid" jdbcType="INTEGER"/>
+        <result property="lid" column="lid" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="LocationMap">
+        select
+          id, lName, wid, lid
+        from warehouse2db.location
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="LocationMap">
+        select
+          id, lName, wid, lid
+        from warehouse2db.location
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="LocationMap">
+        select
+          id, lName, wid, lid
+        from warehouse2db.location
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="lname != null and lname != ''">
+                and lName = #{lname}
+            </if>
+            <if test="wid != null">
+                and wid = #{wid}
+            </if>
+            <if test="lid != null">
+                and lid = #{lid}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into warehouse2db.location(lName, wid, lid)
+        values (#{lname}, #{wid}, #{lid})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update warehouse2db.location
+        <set>
+            <if test="lname != null and lname != ''">
+                lName = #{lname},
+            </if>
+            <if test="wid != null">
+                wid = #{wid},
+            </if>
+            <if test="lid != null">
+                lid = #{lid},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from warehouse2db.location where id = #{id}
+    </delete>
+
+</mapper>

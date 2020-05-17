@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.demo.test.dao.WarehouseDao">
+
+    <resultMap type="com.demo.test.entity.Warehouse" id="WarehouseMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="wname" column="wName" jdbcType="VARCHAR"/>
+        <result property="effect" column="effect" jdbcType="VARCHAR"/>
+        <result property="leasetime" column="leaseTime" jdbcType="TIMESTAMP"/>
+        <result property="area" column="area" jdbcType="OTHER"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
+        <result property="did" column="did" jdbcType="INTEGER"/>
+        <result property="wid" column="wid" jdbcType="INTEGER"/>
+        <result property="mid" column="mid" jdbcType="INTEGER"/>
+        <result property="contactperson" column="contactPerson" jdbcType="VARCHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="WarehouseMap">
+        select
+          id, wName, effect, leaseTime, area, address, did, wid, mid, contactPerson, phone
+        from warehouse2db.warehouse
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="WarehouseMap">
+        select
+          id, wName, effect, leaseTime, area, address, did, wid, mid, contactPerson, phone
+        from warehouse2db.warehouse
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="WarehouseMap">
+        select
+          id, wName, effect, leaseTime, area, address, did, wid, mid, contactPerson, phone
+        from warehouse2db.warehouse
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="wname != null and wname != ''">
+                and wName = #{wname}
+            </if>
+            <if test="effect != null and effect != ''">
+                and effect = #{effect}
+            </if>
+            <if test="leasetime != null">
+                and leaseTime = #{leasetime}
+            </if>
+            <if test="area != null">
+                and area = #{area}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
+            </if>
+            <if test="did != null">
+                and did = #{did}
+            </if>
+            <if test="wid != null">
+                and wid = #{wid}
+            </if>
+            <if test="mid != null">
+                and mid = #{mid}
+            </if>
+            <if test="contactperson != null and contactperson != ''">
+                and contactPerson = #{contactperson}
+            </if>
+            <if test="phone != null and phone != ''">
+                and phone = #{phone}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into warehouse2db.warehouse(wName, effect, leaseTime, area, address, did, wid, mid, contactPerson, phone)
+        values (#{wname}, #{effect}, #{leasetime}, #{area}, #{address}, #{did}, #{wid}, #{mid}, #{contactperson}, #{phone})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update warehouse2db.warehouse
+        <set>
+            <if test="wname != null and wname != ''">
+                wName = #{wname},
+            </if>
+            <if test="effect != null and effect != ''">
+                effect = #{effect},
+            </if>
+            <if test="leasetime != null">
+                leaseTime = #{leasetime},
+            </if>
+            <if test="area != null">
+                area = #{area},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
+            </if>
+            <if test="did != null">
+                did = #{did},
+            </if>
+            <if test="wid != null">
+                wid = #{wid},
+            </if>
+            <if test="mid != null">
+                mid = #{mid},
+            </if>
+            <if test="contactperson != null and contactperson != ''">
+                contactPerson = #{contactperson},
+            </if>
+            <if test="phone != null and phone != ''">
+                phone = #{phone},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from warehouse2db.warehouse where id = #{id}
+    </delete>
+
+</mapper>
