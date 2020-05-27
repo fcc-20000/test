@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.warehousemanager.warehousehome.mapper.user.UserMapper">
+    <select id="loadUserByUserName" resultType="cn.bdqn.warehousemanager.communal.entity.UserVO">
+               SELECT * FROM USER WHERE `username`=#{userName}
+    </select>
+
+    <select id="getUserRolesByUid" resultType="cn.bdqn.warehousemanager.communal.entity.Role">
+        SELECT * FROM `role` r ,`user_role` ur
+        WHERE r.`id`=ur.`rid` AND ur.`uid`=#{id}
+    </select>
+
+    <insert id="addUser" useGeneratedKeys="true" keyProperty="id"
+            parameterType="cn.bdqn.warehousemanager.communal.entity.UserVO">
+       INSERT INTO `warehousedb`.`user` (  `username`, `password`, `phone`,
+            `email`,
+            `enabled`,`locked`,`reaName`,`did`,`creationTime`,`founder`
+        )
+        VALUES
+        (
+            #{username},    #{password},   #{phone},
+               #{email},'1', '0',
+               #{reaName},   #{did}, #{creationTime},#{founder}
+  )
+    </insert>
+
+    <select id="getUserAll" resultType="cn.bdqn.warehousemanager.communal.entity.UserVO">
+        SELECT u.`id`,
+        u.`username`,u.`reaName`,u.`email`,u.`phone`,u.`creationTime`,d.`departmentName`,r.`name`
+        FROM `user` u
+        LEFT JOIN `user_role` ur ON ur.`uid`=u.`id`
+        LEFT JOIN `role` r ON r.`id`=ur.`rid`
+        LEFT JOIN `department` d ON d.`id`=u.`did`
+        where 1=1
+        <if test="username != null and username != ''">
+            and u.`username` like concat('%',#{username},'%')
+        </if>
+        <if test="id != null and id != ''">
+            and u.`id` like concat('%',#{id},'%')
+        </if>
+        <if test="did !=null and did !=0 ">
+            and u.`did`=#{did}
+        </if>
+        <if test="rid !=null and rid !=0 ">
+            and r.`id` =#{rid}
+        </if>
+        <if test="pageNo !=null">
+            limit #{pageNo},#{pageSize}
+        </if>
+
+    </select>
+
+    <select id="getUserAllCount" resultType="int">
+        SELECT count(1)
+        FROM`user` u
+        LEFT JOIN `user_role` ur ON ur.`uid`=u.`id`
+        LEFT JOIN `role` r ON r.`id`=ur.`rid`
+        LEFT JOIN `department` d ON d.`id`=u.`did`
+        where 1=1
+        <if test="username != null and username != ''">
+            and u.`username` like concat('%',#{username},'%')
+        </if>
+        <if test="id != null and id != ''">
+            and u.`id` like concat('%',#{id},'%')
+        </if>
+        <if test="did !=null and did !=0 ">
+            and u.`did`=#{did}
+        </if>
+        <if test="rid !=null and rid !=0 ">
+            and r.`id` =#{rid}
+        </if>
+    </select>
+
+
+    <delete id="deleteUserById">
+        DELETE
+        FROM
+        `user`
+        WHERE `id` = #{id}
+    </delete>
+
+    <select id="getUserById" resultType="cn.bdqn.warehousemanager.communal.entity.UserVO">
+        SELECT u.*,ur.`rid` AS rid
+        FROM `user` u, `user_role` ur
+        WHERE ur.`uid`=u.`id` AND  u.`id`=#{id}
+    </select>
+
+    <update id="updateUserById">
+        UPDATE
+          `warehousedb`.`user`
+        SET
+          `username` = #{username},
+          `password` = #{password},
+          `phone` = #{phone},
+          `email` = #{email},
+          `did` = #{did}
+        WHERE `id` = #{id}
+    </update>
+
+    <select id="getUserNmaeCount" resultType="Integer">
+            SELECT COUNT(1)
+            FROM `user`
+            WHERE `username`=#{name}
+    </select>
+</mapper>

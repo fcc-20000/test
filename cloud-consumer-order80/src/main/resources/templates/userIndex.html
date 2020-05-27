@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+
+
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+</head>
+<body>
+<!---->
+<div>
+    <h3>数据筛选</h3>
+
+    <form method="get" action="index">
+        <table>
+            <tr>
+                <td>用户名：</td>
+                <td><input type="text" id="username" name="username" th:value="${user.username}"></td>
+                <td>工号：</td>
+                <td><input type="text" id="id" name="id" th:value="${user.id}"></td>
+                <td>
+                    <span>部门</span>
+                </td>
+                <td>
+                    <select id="did" name="did">
+                        <option value="0">请选择</option>
+                        <span th:each="department:${departments}">
+                 <option th:value="${department.id}" th:text="${department.departmentName}"
+                         th:selected="${department.id eq user.did}">
+                </option>
+            </span>
+                    </select>
+                </td>
+            <tr>
+                <td>
+                    <span>角色</span>
+                </td>
+                <td>
+                    <select id="rid" name="rid">
+                        <option value="0">请选择</option>
+                        <span th:each="role:${roles}">
+                 <option th:value="${role.id}" th:text="${role.name}" th:selected="${role.id eq user.rid}">
+                </option>
+            </span>
+                    </select>
+                </td>
+                <td>
+                    <input type="submit" value="提交" >
+                    <input type="reset" value="重置">
+
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div>
+    <input type="button" value="添加" onclick="location.href='/api/user/adduser'" sec:authorize="hasRole('ROLE_用户添加')">
+    <a href="/api/user/export">
+        <button type="button" class="btn btn-primary">导出</button>
+    </a>
+    <form class="form-horizontal" id="form_table" action="/api/user/import" enctype="multipart/form-data" method="post">
+        <br/>
+        <br/>
+        <button type="submit" class="btn btn-primary">导入</button>
+        <input class="form-input" type="file" name="filename"></input>
+    </form>
+</div>
+<div>
+    <a><h3>数据展示列表</h3></a>
+    <table border="1">
+        <tr>
+            <td>用户名</td>
+            <td>工号</td>
+            <td>真名</td>
+            <td>邮箱</td>
+            <td>手机</td>
+            <td>创建时间</td>
+            <td>部门</td>
+            <td>角色</td>
+            <td>操作</td>
+        </tr>
+        <!--        <span th:each="page:${pages}">-->s
+        <tr th:each="userVO:${pages.rows}">
+            <td th:text="${userVO.username}"></td>
+            <td th:text="${userVO.id}"></td>
+            <td th:text="${userVO.reaName}"></td>
+            <td th:text="${userVO.email}"></td>
+            <td th:text="${userVO.phone}"></td>
+            <td th:text="${userVO.creationTime}"></td>
+            <td th:text="${userVO.departmentName}"></td>
+            <td th:text="${userVO.name}"></td>
+            <td>
+                <a href="#" th:href="@{/api/user/editUser(id=${userVO.id})}" sec:authorize="hasRole('ROLE_用户修改')" >编辑</a>
+                <a href="#" name="delete" th:value="${userVO.id}" sec:authorize="hasRole('ROLE_用户删除')">删除</a>
+                <a href="#">重置密码</a>
+            </td>
+        </tr>
+        <!--        </span>-->
+    </table>
+</div>
+<div class="table-pagination">
+    <ul class="pagination">
+        <li>
+            <a id="previous" href="javascript:void(0);" th:value="${pages.beginPos -1}">上一页</a>
+        </li>
+        <li th:each="pageNo : ${#numbers.sequence(1, pages.pageCount )}">
+            <a th:value="${pageNo }" name="index"
+               href="javascript:void(0);">
+                <span th:text="${pageNo }"></span>
+            </a>
+        </li>
+        <li>
+            <a href="javascript:void(0);" id="next" th:value="${pages.beginPos+1}">下一页</a>
+        </li>
+    </ul>
+</div>
+<script src="/static/resource/data/jquery-3.3.1.min.js"></script>
+<script>
+    //点击翻页
+    $("a[name=index]").click(function () {
+        var username = $("#username").val();
+        var did = $("#did").val();
+        var pageNo = $(this).attr("value");
+        location.href = "index?username=" + username + "&did=" + did + "&pageNo=" + pageNo;
+    })
+    //翻译，上一页
+    $("#previous").click(function () {
+        var username = $("#username").val();
+        var did = $("#did").val();
+        var pageNo = parseInt($(this).attr("value")) - 1;
+        location.href = "index?username=" + username + "&did=" + did + "&pageNo=" + pageNo;
+    });
+    //翻译，下一页
+    $("#next").click(function () {
+        var username = $("#username").val();
+        var did = $("#did").val();
+        var pageNo = parseInt($(this).attr("value")) + 1;
+        location.href = "index?username=" + username + "&did=" + did + "&pageNo=" + pageNo;
+    });
+    //删除
+    $("a[name=delete]").click(function () {
+        var panduan = confirm("该操作将删除该用户数据,确定要删除吗？");
+        if (panduan) {
+            var id = $(this).attr("value");
+            $.ajax({
+                url: "/api/user/delete?id=" + id,
+                type: "GET",
+                dataType: "JSON",  //数据类型
+                success: function (d) {
+                    var obj2 = eval(d);
+                    alert(obj2[0]);
+                    location.href = "index";
+                }
+            });
+        }
+    });
+
+</script>
+</body>
+</html>

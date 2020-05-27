@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>邮件</title>
+</head>
+<body>
+<div><h3>账户添加</h3></div>
+<div><h4>您的注册信息是：</h4></div>
+<div>
+    <table border="1">
+        <tr>
+            <td>工号</td>
+            <td th:text="${id}"></td>
+        </tr>
+        <tr>
+            <td>用户名</td>
+            <td th:text="${username}"></td>
+        </tr>
+    </table>
+
+
+</div>
+</body>
+</html>

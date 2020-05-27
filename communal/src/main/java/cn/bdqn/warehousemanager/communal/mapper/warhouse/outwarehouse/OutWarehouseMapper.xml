@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.warehousemanager.communal.mapper.warhouse.outwarehouse.OutWarehouseMapper">
+    <select id="getAllWarehousing" resultType="cn.bdqn.warehousemanager.communal.entity.vo.WarehousingVo">
+        SELECT w.`id`,w.`founder`,w.`reviewer`,t.`wname` AS wName,s.`sName`,w.`reviewTime`,a.`name` AS aName
+        FROM `outwarehouse` w
+        LEFT JOIN `warehousingtype` t ON t.`id`=w.`wid`
+        LEFT JOIN `audit` a ON a.`id`=w.`aid`
+        LEFT JOIN `supplier` s ON s.`id`=w.`id`
+        WHERE 1=1
+        <if test="founder != null and founder!=''">
+            and w.`founder` LIKE concat('%',#{founder},'%')
+        </if>
+        <if test="wid != null">
+            and w.`wid`=#{wid}
+        </if>
+        <if test="aid !=null">
+            and w.`aid`=#{aid}
+        </if>
+        limit #{pageNo},#{pageSize}
+    </select>
+
+    <select id="getAllWarehousingCount" resultType="Integer">
+        SELECT count(1)
+        FROM `outwarehouse` w
+        LEFT JOIN `warehousingtype` t ON t.`id`=w.`wid`
+        LEFT JOIN `audit` a ON a.`id`=w.`aid`
+        LEFT JOIN `supplier` s ON s.`id`=w.`id`
+        WHERE 1=1
+        <if test="founder != null and founder!=''">
+            and w.`founder` LIKE concat('%',#{founder},'%')
+        </if>
+        <if test="wid != null">
+            and w.`wid`=#{wid}
+        </if>
+        <if test="aid !=null">
+            and w.`aid`=#{aid}
+        </if>
+    </select>
+
+    <select id="getWarehousingVoById" resultType="cn.bdqn.warehousemanager.communal.entity.vo.WarehousingVo">
+        SELECT w.*,t.`wname` AS wName,s.`sName`,w.`reviewTime`,a.`name` AS aName,s.`contactPerson`,s.`phone`
+        FROM `outwarehouse` w
+        LEFT JOIN `warehousingtype` t ON t.`id`=w.`wid`
+        LEFT JOIN `audit` a ON a.`id`=w.`aid`
+        LEFT JOIN `supplier` s ON s.`id`=w.`id`
+         WHERE w.`id`=#{id}
+
+    </select>
+
+    <insert id="addWarehousing" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO `outwarehouse` (`wid`,`aid`,`sid`,
+            `founder`,`creationTime`,`remarks`)
+        VALUES(#{wid},'1',#{sid},
+            #{founder},#{creationTime},#{remarks})
+    </insert>
+
+    <delete id="deleteWarehousingById">
+        DELETE
+        FROM
+          `outwarehouse`
+        WHERE `id` = #{id}
+    </delete>
+
+    <update id="updateWarehousing">
+        UPDATE
+        `outwarehouse`
+        SET
+          `wid` = #{wid},
+          `aid` = #{aid},
+          `remarks` = #{remarks}
+        WHERE `id` = #{id}
+    </update>
+
+    <update id="updateReview">
+    UPDATE
+        `outwarehouse`
+    SET
+        `aid` = #{aid},
+        `reviewTime` = #{reviewTime},
+        `reviewer` = #{reviewer}
+    WHERE `id` = #{id}
+    </update>
+</mapper>

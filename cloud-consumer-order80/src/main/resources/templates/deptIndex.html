@@ -1,0 +1,73 @@
+﻿<!DOCTYPE  html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>部门管理</title>
+</head>
+<body>
+<div>
+  <h3>数据筛选</h3>
+
+  <form method="get" action="/api/user/deptIndex">
+    <table border="1">
+      <tr>
+        <td>部门名称：</td>
+        <td><input type="text" id="departmentName" name="departmentName" th:value="${department.departmentName}"></td>
+        <td>
+          <input type="submit" value="提交">
+          <input type="reset" value="重置">
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+<div>
+ <h4 th:text="${verification}"></h4>
+</div>
+<div>
+  <a href="/api/user/addRole">
+    <input type="button" th:value="新增">
+  </a>
+</div>
+<div>
+  <table border="1">
+    <tr>
+      <td>部门名称</td>
+      <td>创建时间</td>
+      <td>操作</td>
+    </tr>
+    <tr th:each="row:${departments}">
+      <td th:text="${row.departmentName}">
+      </td>
+      <td th:text="${row.creationTime}">
+      </td>
+      <td>
+        <a href="#" th:href="@{/api/user/editRole(id=${row.id})}">编辑</a>
+        <a href="#" name="delete" th:value="${row.id}">删除</a>
+      </td>
+    </tr>
+  </table>
+
+</div>
+<script src="/static/resource/data/jquery-3.3.1.min.js"></script>
+<script>
+  $("a[name=delete]").click(function () {
+    var panduan = confirm("该操作将删除该用户数据,确定要删除吗？");
+    if (panduan) {
+      var id = $(this).attr("value");
+      alert(id);
+      $.ajax({
+        url: "/api/user/deleteDepartment/" + id,
+        type: "GET",
+        dataType: "JSON",  //数据类型
+        success: function (d) {
+          var obj2 = eval(d);
+          alert(obj2[0]);
+          location.href = "roleIndex";
+        }
+      });
+    }
+  });
+</script>
+</body>
+</html>

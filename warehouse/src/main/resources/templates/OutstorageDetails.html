@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>入库单详情</title>
+</head>
+<body>
+<div style="border: black 1px">
+    <div style="background-color: aquamarine">
+        <h4>入库单详情</h4>
+    </div>
+
+    <div>
+        <table border="1">
+            <tr>
+                <td>入库单号：</td>
+                <td th:text="${warehousingVo.id}"></td>
+                <td>入库单类型：</td>
+                <td th:text="${warehousingVo.wName}"></td>
+                <td>入库状态：</td>
+                <td th:text="${warehousingVo.aName}"></td>
+            </tr>
+
+            <tr>
+                <td>供应商编号：</td>
+                <td th:text="${warehousingVo.sid}"></td>
+                <td>供应商名称：</td>
+                <td th:text="${warehousingVo.sName}"></td>
+                <td>联系人：</td>
+                <td th:text="${warehousingVo.contactPerson}"></td>
+            </tr>
+
+            <tr>
+                <td>电话：</td>
+                <td th:text="${warehousingVo.phone}"></td>
+                <td>制单人：</td>
+                <td th:text="${warehousingVo.founder}"></td>
+                <td>制单日期：</td>
+                <td th:text="${warehousingVo.creationTime}"></td>
+            </tr>
+            <tr>
+                <td>备注：</td>
+                <td th:text="${warehousingVo.remarks}"></td>
+            </tr>
+        </table>
+    </div>
+
+    <div>
+        <table border="1">
+            <tr style="background-color: aquamarine">
+                <td>产品编码</td>
+                <td>产品名称</td>
+                <td>规格</td>
+                <td>批次</td>
+                <td>单价</td>
+                <td>入库数</td>
+                <td>总价</td>
+                <td>库位</td>
+            </tr>
+            <tr th:each="warehousingProducts:${warehousingProductsList}">
+                <td th:text="${warehousingProducts.pId}"></td>
+                <td th:text="${warehousingProducts.pName}"></td>
+                <td th:text="${warehousingProducts.mName}"></td>
+                <td th:text="${warehousingProducts.batch}"></td>
+                <td th:text="${warehousingProducts.price}"></td>
+                <td th:text="${warehousingProducts.number}"></td>
+                <td th:text="${warehousingProducts.totalPrice}"></td>
+                <td th:text="${warehousingProducts.lName}"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增角色</title>
+</head>
+<body>
+<div>
+    <h1>新增角色</h1>
+</div>
+<div>
+    <span style="background-color: red" th:text="${message}"></span>
+</div>
+<form method="post" action="/api/user/addRole">
+    <table border="1">
+        <tr>
+            <td>角色名</td>
+            <td>
+                <input type="text" name="name" th:value="${role.name}">
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" value="提交">
+                <input type="reset" value="重置">
+            </td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

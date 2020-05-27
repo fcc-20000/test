@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>新增入库单</title>
+</head>
+<body>
+<div style="background-color: aquamarine">
+    <h4>新增入库单</h4>
+</div>
+<form method="post" action="/api/house/addWarehousing">
+<!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+    <div>
+        <table>
+            <tr>
+                <td>入库单类型:</td>
+                <td>
+                    <select id="wid" name="wid">
+            <span th:each="warehousingType:${warehousingTypeList}">
+                 <option th:value="${warehousingType.id}" th:text="${warehousingType.wname}">
+                </option>
+            </span>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    供应商名称:
+                </td>
+                <td>
+                    <select name="sid" id="sid">
+                <span th:each="supplier:${supplierList}">
+                <option th:value="${supplier.id}" th:text="${supplier.sName}"></option>
+                 </span>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>备注:</td>
+                <td>
+                    <input type="text" name="remarks">
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="background-color: aquamarine">
+        <h4>入库产品信息</h4>
+    </div>
+    <div>
+
+        <table>
+            <tr>
+                <td>
+                    <input type="checkbox">
+                </td>
+                <td>产品名称</td>
+                <td>产品编号</td>
+                <td>规格</td>
+                <td>单价</td>
+                <td>批次</td>
+                <td>入库数</td>
+                <td>总价</td>
+                <td>库位</td>
+            </tr>
+            <tr th:each="product:${productList}">
+                <td>
+                    <input type="checkbox" name="pId" th:value="${product.id}">
+                </td>
+                <td>
+                    <span th:text="${product.pName}"></span>
+                </td>
+                <td>
+                    <span th:text="${product.id}"></span>
+                </td>
+                <td>
+                    <span th:text="${product.mName}"></span>
+                </td>
+                <td>
+                    <span th:text="${product.price}"></span>
+                </td>
+                <td>
+                    <input type="text" name="batch" id="batch">
+                </td>
+                <td>
+                    <input type="text" name="number" id="number">
+                </td>
+                <td>
+                    <input type="text" name="totalPrice" id="totalPrice">
+                </td>
+                <td>
+                    <select name="lid" id="lid">
+                <span th:each="location:${locationList}">
+                <option th:value="${location.id}" th:text="${location.lName}"></option>
+                 </span>
+                    </select>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <input type="submit" value="提交">
+        <a href="#">
+            <input type="button" value="返回">
+        </a>
+    </div>
+</form>
+</body>
+</html>

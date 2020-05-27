@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑入库</title>
+
+</head>
+<body>
+<form method="post" action="/api/warehouse/updateWarehousingVo">
+    <!--    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>-->
+    <input type="hidden" name="warehousingId" th:value="${warehousingVo.id}">
+    <div>
+        <table>
+            <tr>
+                <td>入库单类型:</td>
+                <td>
+                    <select id="wid" name="wid">
+            <span th:each="warehousingType:${warehousingTypeList}">
+                 <option th:value="${warehousingType.id}" th:text="${warehousingType.wname}"
+                         th:selected="${warehousingType.id eq warehousingVo.wid}"
+                 >
+                </option>
+            </span>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    供应商名称:
+                </td>
+                <td>
+                    <select name="sid" id="sid">
+                <span th:each="supplier:${supplierList}">
+                <option th:value="${supplier.id}" th:text="${supplier.sName}"
+                        th:selected="${supplier.id eq warehousingVo.sid}"
+                ></option>
+                 </span>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>备注:</td>
+                <td>
+                    <input type="text" name="remarks" th:value="${warehousingVo.remarks}">
+
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div style="background-color: aquamarine">
+        <h4>入库产品信息</h4>
+    </div>
+    <div>
+
+        <table>
+            <tr>
+
+                <td>产品名称</td>
+                <td>产品编号</td>
+                <td>规格</td>
+                <td>单价</td>
+                <td>批次</td>
+                <td>入库数</td>
+                <td>总价</td>
+                <td>库位</td>
+            </tr>
+            <tr th:each="warehousingProducts:${warehousingProductsList}">
+
+                <input type="hidden" name="id" th:value="${warehousingProducts.id}">
+                <input type="hidden" name="pId" th:value="${warehousingProducts.pId}">
+                <td>
+                    <span th:text="${warehousingProducts.pName}"></span>
+                </td>
+                <td>
+                    <span th:text="${warehousingProducts.pId}"></span>
+                </td>
+                <td>
+                    <span th:text="${warehousingProducts.mName}"></span>
+                </td>
+                <td>
+                    <span th:text="${warehousingProducts.price}"></span>
+                </td>
+                <td>
+                    <input type="text" name="batch" id="batch" th:value="${warehousingProducts.batch}">
+                </td>
+                <td>
+                    <input type="text" name="number" id="number" th:value="${warehousingProducts.number}">
+                </td>
+                <td>
+                    <input type="text" name="totalPrice" id="totalPrice" th:value="${warehousingProducts.totalPrice}">
+                </td>
+                <td>
+                    <select name="lid" id="lid">
+                <span th:each="location:${locationList}">
+                <option th:value="${location.id}" th:text="${location.lName}"
+                        th:selected="${location.id eq warehousingProducts.lid}"
+                ></option>
+                 </span>
+                    </select>
+                </td>
+                <td>
+                    <a href="#" name="delete" th:value="${warehousingProducts.id}">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div>
+        <input type="submit" value="提交">
+        <a href="#">
+            <input type="button" value="返回">
+        </a>
+    </div>
+</form>
+<script src="/static/jquery-3.3.1.min.js"></script>
+<script>
+    //删除
+    $("a[name=delete]").click(function () {
+        var panduan = confirm("该操作将删除该用户数据,确定要删除吗？");
+
+        if (panduan) {
+            var id = $(this).attr("value");
+            $.ajax({
+                url: "/api/user/deleteWarehousingproducts?id=" + id,
+                type: "GET",
+                dataType: "JSON",  //数据类型
+                success: function (d) {
+                    var obj2 = eval(d);
+                    alert(obj2[0]);
+
+                }
+            });
+            $(this).parent().parent().remove();
+        }
+    });
+</script>
+</body>
+</html>

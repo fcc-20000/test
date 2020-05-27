@@ -1,0 +1,161 @@
+﻿<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>用户管理</title>
+
+
+</head>
+<body>
+<div>
+    <h3>数据筛选</h3>
+
+    <form method="get" action="/api/house/getWarehousing">
+        <table border="1">
+            <tr>
+                <td>制单人</td>
+                <td><input type="text" id="founder" name="founder" th:value="${warehousingVo.founder}"></td>
+
+                <td>
+                    <span>单据类型：</span>
+                </td>
+                <td>
+                    <select id="wid" name="wid">
+                        <option value="0">请选择</option>
+                        <span th:each="warehousingType:${warehousingTypeList}">
+
+                 <option th:value="${warehousingType.id}" th:text="${warehousingType.wname}"
+                         th:selected="${warehousingType.id eq warehousingVo.wid}">
+                </option>
+            </span>
+                    </select>
+                </td>
+
+                <td>
+                    <span>审核状态:</span>
+                </td>
+                <td>
+                    <select id="aid" name="aid">
+                        <option value="0">请选择</option>
+                        <span th:each="audit:${auditList}">
+                 <option th:value="${audit.id}" th:text="${audit.name}"
+                         th:selected="${audit.id eq warehousingVo.aid}">
+                </option>
+            </span>
+                    </select>
+                </td>
+
+                <td>
+                    <input type="submit" value="提交">
+                    <input type="reset" value="重置">
+                </td>
+            </tr>
+        </table>
+    </form>
+</div>
+<div>
+    <input type="button" value="添加" onclick="location.href='/api/house/addWarehousing'">
+</div>
+<div>
+    <a><h3>数据展示列表</h3></a>
+    <table border="1">
+        <tr>
+            <td>入库单编号</td>
+            <td>入库类型</td>
+            <td>供应商</td>
+            <td>制单人</td>
+            <td>状态</td>
+            <td>审核人</td>
+            <td>审核时间</td>
+            <td>操作</td>
+        </tr>
+        <span th:each="page:${pages}">
+          <tr th:each="row:${page.rows}">
+
+            <td th:text="${row.id}"></td>
+              <td th:text="${row.wName}"></td>
+              <td th:text="${row.sName}"></td>
+              <td th:text="${row.founder}"></td>
+              <td th:text="${row.aName}"></td>
+              <td th:text="${row.reviewer}"></td>
+              <td th:text="${row.reviewTime}"></td>
+              <td>
+                      <a href="#" th:href="@{/api/house/updateReviewHtml(id=${row.id})}">审核</a>
+                  <a href="#" th:href="@{/api/house/detailed(id=${row.id})}">查看</a>
+                  <a href="#" th:href="@{/api/house/updateWarehousingVo(id=${row.id})}">编辑</a>
+                  <a href="#" name="delete" th:value="${row.id}">删除</a>
+              </td>
+         </tr>
+        </span>
+    </table>
+</div>
+<div class="table-pagination">
+    <ul class="pagination">
+        <li th:if="${pages.beginPos eq 0} ? 'disabled' : ''">
+            <a id="previous" href="javascript:void(0);" th:value="${pages.beginPos+1}">上一页</a>
+        </li>
+        <li th:each="pageNo : ${#numbers.sequence(0, pages.pageCount - 1)}"
+            th:if="${pages.beginPos+1 eq pageNo}? 'active' : ''">
+            <a th:if="${pages.beginPos  eq pageNo}" href="javascript:void(0);" th:value="${pageNo + 1}" name="index">
+                <span th:text="${pageNo + 1}"></span>
+            </a>
+            <a th:if="${not (pages.beginPos  eq pageNo)}" th:value="${pageNo + 1}" name="index"
+               href="javascript:void(0);">
+                <span th:text="${pageNo + 1}"></span>
+            </a>
+
+        </li>
+        <li th:class="${pages.beginPos+1 ge pages.pageCount} ? 'disabled' : ''">
+            <a href="javascript:void(0);" id="next" th:value="${pages.beginPos+1}">下一页</a>
+        </li>
+    </ul>
+</div>
+<script src="/static/jquery-3.3.1.min.js"></script>
+<script>
+    //点击翻页
+    $("a[name=index]").click(function () {
+        var founder = $("#founder").val();
+        var wid = $("#wid").val();
+        var aid = $("#aid").val();
+
+        var pageNo = $(this).attr("value");
+        location.href = "getWarehousing?founder=" + founder + "&wid=" + wid + "&aid=" + aid + "&pageNo=" + pageNo;
+    })
+    //翻译，上一页
+    $("#previous").click(function () {
+        var founder = $("#founder").val();
+        var wid = $("#wid").val();
+        var aid = $("#aid").val();
+        var pageNo = parseInt($(this).attr("value")) - 1;
+        location.href = "getWarehousing?founder=" + founder + "&wid=" + wid + "&aid=" + aid + "&pageNo=" + pageNo;
+    });
+    //翻译，下一页
+    $("#next").click(function () {
+        var founder = $("#founder").val();
+        var wid = $("#wid").val();
+        var aid = $("#aid").val();
+        var pageNo = parseInt($(this).attr("value")) + 1;
+        location.href = "getWarehousing?founder=" + founder + "&wid=" + wid + "&aid=" + aid + "&pageNo=" + pageNo;
+    });
+    //删除
+    $("a[name=delete]").click(function () {
+        var panduan = confirm("该操作将删除该用户数据,确定要删除吗？");
+        if (panduan) {
+            var id = $(this).attr("value");
+            $.ajax({
+                url: "/api/house/delete?id=" + id,
+                type: "GET",
+                dataType: "JSON",  //数据类型
+                success: function (d) {
+                    var obj2 = eval(d);
+                    alert(obj2[0]);
+                    location.href = "getWarehousing";
+                }
+            });
+        }
+    });
+
+
+</script>
+</body>
+</html>

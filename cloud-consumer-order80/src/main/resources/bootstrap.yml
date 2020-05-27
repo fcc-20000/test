@@ -1,0 +1,13 @@
+spring:
+  cloud:
+    config:
+      uri:  http://localhost:3344  #配置中心地址
+      label: master
+      name: application
+      profile: security
+eureka:
+  client:
+    healthcheck:
+      enabled: false
+    serviceUrl:
+      defaultZone: http://localhost:7001/eureka/

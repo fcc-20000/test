@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.warehousemanager.communal.mapper.menu.MenuMapper">
+    <resultMap id="BaseResultMap" type="cn.bdqn.warehousemanager.communal.entity.Menu">
+        <id property="id" column="id"/>
+        <result property="menuName" column="menuName"/>
+        <result property="parentId" column="parentId"/>
+        <result property="url" column="url"/>
+        <collection property="roles" ofType="cn.bdqn.warehousemanager.communal.entity.Role">
+            <id property="id" column="rid"/>
+            <result property="name" column="name"/>
+        </collection>
+    </resultMap>
+
+    <select id="getAllMenus" resultMap="BaseResultMap">
+        SELECT m.*,r.`id` AS rid,r.`name` AS `name`
+        FROM `menu` m
+        LEFT JOIN `menu_role` mr ON m.`id`=mr.`mid`
+        LEFT JOIN `role` r ON mr.`rid`=r.`id`
+        WHERE m.`parentId` IS NULL
+    </select>
+
+    <delete id="deleteMenuByRid">
+        DELETE
+        FROM
+         `menu_role`
+        WHERE `rid`=#{rid}
+    </delete>
+
+    <insert id="addRoleMenu">
+        INSERT INTO `warehousedb`.`menu_role` ( `mid`, `rid`)
+        VALUES( #{mid},  #{rid})
+    </insert>
+
+
+    <select id="getMenusById" resultType="cn.bdqn.warehousemanager.communal.entity.Menu">
+          SELECT * FROM `menu` m ,`menu_role` mr
+        WHERE m.`id`=mr.`mid` AND mr.`rid`=#{id}
+    </select>
+
+    <select id="getMenusByparentId" resultType="cn.bdqn.warehousemanager.communal.entity.Menu">
+        SELECT m.*,r.`id` AS rid,r.`name` AS `name`
+        FROM `menu` m
+        LEFT JOIN `menu_role` mr ON m.`id`=mr.`mid`
+        LEFT JOIN `role` r ON mr.`rid`=r.`id`
+        WHERE m.`parentId` =#{parentId}
+    </select>
+</mapper>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.bdqn.warehousemanager.communal.mapper.warhouse.warehousingproducts.WarehousingProductsMapper">
+    <select id="getWarehousingProductsById"
+            resultType="cn.bdqn.warehousemanager.communal.entity.warhouse.WarehousingProducts">
+        SELECT w.*,p.`id` AS pId,p.`pName`,m.`mName`,p.`price`,l.`lName`
+        FROM `warehousingproducts` w
+        LEFT JOIN `warehousing` wh ON wh.`id`=w.`wid`
+        LEFT JOIN `product` p ON p.`id`=w.`pid`
+        LEFT JOIN `location` l ON w.`lid`=l.`id`
+        LEFT JOIN `measurement` m ON m.`id`=p.`mid`
+        WHERE w.`wid`=#{id}
+    </select>
+
+
+    <insert id="addWarehousingProducts">
+        INSERT INTO `warehousingproducts` (`wid`,`pid`,`lid`,
+            `number`,`totalPrice`,`batch`)
+        VALUES(#{wid},#{pid}, #{lid},
+            #{number},#{totalPrice},#{batch})
+    </insert>
+
+    <delete id="deleteWarehousingProductsByWid">
+        DELETE
+        FROM
+        `warehousingproducts`
+        WHERE `wid`=#{wid}
+    </delete>
+
+    <delete id="deleteWarehousingProductsByid">
+         DELETE
+        FROM
+        `warehousingproducts`
+        WHERE `id`=#{id}
+    </delete>
+
+    <update id="updateWarehousingProducts">
+        UPDATE
+          `warehousingproducts`
+        SET
+          `pid` = #{pid},
+          `lid` = #{lid},
+          `number` = #{number},
+          `totalPrice` = #{totalPrice},
+          `batch` = #{batch}
+        WHERE `id` = #{id}
+
+    </update>
+</mapper>
